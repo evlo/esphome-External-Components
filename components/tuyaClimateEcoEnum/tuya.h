@@ -93,7 +93,6 @@ class Tuya : public Component, public uart::UARTDevice {
   void force_set_bitmask_datapoint_value(uint8_t datapoint_id, uint32_t value, uint8_t length);
   TuyaInitState get_init_state();
 
-  optional<TuyaDatapoint> get_datapoint_(uint8_t datapoint_id);
 #ifdef USE_TIME
   void set_time_id(time::RealTimeClock *time_id) { this->time_id_ = time_id; }
 #endif
@@ -105,6 +104,7 @@ class Tuya : public Component, public uart::UARTDevice {
   }
 
  protected:
+  optional<TuyaDatapoint> get_datapoint_(uint8_t datapoint_id);
   void handle_char_(uint8_t c);
   void handle_datapoints_(const uint8_t *buffer, size_t len);  
   bool validate_message_();

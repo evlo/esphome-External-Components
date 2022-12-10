@@ -4,7 +4,7 @@
 namespace esphome {
 namespace tuya {
 
-static const char *const TAG = "tuya.climate";
+static const char *const TAG = "tuya.climateEcoEnum";
 
 void TuyaClimate::setup() {
   if (this->switch_id_.has_value()) {
@@ -68,13 +68,8 @@ void TuyaClimate::setup() {
   }
   if (this->eco_id_.has_value()) {
     this->parent_->register_listener(*this->eco_id_, [this](const TuyaDatapoint &datapoint) {
-      if (datapoint.type== TuyaDatapointType::ENUM){
-        this->eco_ = datapoint.value_enum;
-        ESP_LOGV(TAG, "MCU reported eco is: %s", ONOFF(this->eco_));
-      }else{
-        this->eco_ = datapoint.value_bool;
-        ESP_LOGV(TAG, "MCU reported eco is: %s", ONOFF(this->eco_));
-      }
+      this->eco_ = datapoint.value_enum;
+      ESP_LOGV(TAG, "MCU reported eco is: %s", ONOFF(this->eco_));
       this->compute_preset_();
       this->compute_target_temperature_();
       this->publish_state();
@@ -131,14 +126,8 @@ void TuyaClimate::control(const climate::ClimateCall &call) {
     const climate::ClimatePreset preset = *call.get_preset();
     if (this->eco_id_.has_value()) {
       const bool eco = preset == climate::CLIMATE_PRESET_ECO;
-      ESP_LOGV(TAG, "Setting eco: %s", ONOFF(eco));
-      
-      optional<TuyaDatapoint> datapoint = this->parent_->get_datapoint_(*this->eco_id_);
-      if (datapoint->type != TuyaDatapointType::ENUM) {
-        this->parent_->set_enum_datapoint_value(*this->eco_id_, eco);
-      }else{
-        this->parent_->set_boolean_datapoint_value(*this->eco_id_, eco);
-      }      
+      ESP_LOGV(TAG, "Setting eco: %s", ONOFF(eco));    
+      this->parent_->set_enum_datapoint_value(*this->eco_id_, eco);
     }
   }
 }
