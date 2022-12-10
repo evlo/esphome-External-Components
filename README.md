@@ -15,7 +15,7 @@ external_components:
     refresh: 1s
 
 climate:
-  - platform: tuyaClimateEcoEnum #tuya
+  - platform: tuyaClimateEcoEnum
     supports_heat: true
     supports_cool: false
     name: "koupelnaTopeni"
